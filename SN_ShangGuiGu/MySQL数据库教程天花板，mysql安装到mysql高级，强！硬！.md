@@ -1,4 +1,4 @@
-# 01 数据库概述 p1-p6
+[MySQL数据库教程天花板，mysql安装到mysql高级，强！硬！_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1iq4y1u7vj/?spm_id_from=333.337.search-card.all.click&vd_source=339a4744bd362ae7b381fd9629bfd3a9)
 
 
 # 03 基本的SELECT语句 p12
@@ -192,6 +192,78 @@ mysql> SELECT 'a' IN ('a','b','c'), 1 IN (2,3), NULL IN ('a','b'), 'a' IN ('a', 
 
 
 ## 使用正则表达式查询
+
+
+# 05 排序与分页
+
+## 1. 排序数据
+如果没有使用排序操作，默认情况下查询返回的数据是按照添加数据数据的顺序显示
+
+### 1.1 排序规则
+-   使用 ORDER BY 子句排序
+    -   **ASC（ascend）: 升序**
+    -   **DESC（descend）:降序**
+-   ORDER BY 子句在SELECT语句的结尾。
+
+### 1.2 单列排序
+```mysql
+# 如果在ORDER BY后面没有显示指定排序的方式则默认按照升序排列
+# 并且可以使用列的别名进行排序，但是类的别名只能在order by中使用不能再where中使用
+# 因为sql执行的顺序是from where select order by，where使用别名时还没有创建别名
+# where需要声明在from后面order by前面
+SELECT   last_name, job_id, department_id, hire_date  
+FROM     employees  
+ORDER BY hire_date ;
+```
+
+### 1.3 多列排序
+```
+SELECT last_name, department_id, salary  
+FROM   employees  
+ORDER BY department_id, salary DESC;
+```
+-   可以使用不在SELECT列表中的列排序。
+-   在对多列进行排序的时候，首先排序的第一列必须有相同的列值，才会对第二列进行排序。如果第一列数据中所有值都是唯一的，将不再对第二列进行排序。
+
+## 2. 分页
+
+### 2.1 背景
+- 背景1：查询返回的记录太多了，查看起来很不方便，怎么样能够实现分页查询呢？
+- 背景2：表里有 4 条数据，我们只想要显示第 2、3 条数据怎么办呢？
+
+### 2.2 实现规则
+-   分页原理
+    所谓分页显示，就是将数据库中的结果集，一段一段显示出来需要的条件。
+-   **MySQL中使用 LIMIT 实现分页**
+-   格式：
+```mysql
+LIMIT [位置偏移量,] 行数
+```
+    第一个“位置偏移量”参数指示MySQL从哪一行开始显示，是一个可选参数，如果不指定“位置偏移   量”，将会从表中的第一条记录开始；第二个参数“行数”指示返回的记录条数。
+-   举例
+```
+--前10条记录：  
+SELECT * FROM 表名 LIMIT 0,10;  
+或者  
+SELECT * FROM 表名 LIMIT 10;  
+​  
+--第11至20条记录：  
+SELECT * FROM 表名 LIMIT 10,10;  
+​  
+--第21至30条记录：   
+SELECT * FROM 表名 LIMIT 20,10;
+```
+
+> MySQL 8.0中可以使用“LIMIT 3 OFFSET 4”，意思是获取从第5条记录开始后面的3条记录，和“LIMIT 4,3;”返回的结果相同。
+-   分页显式公式：（当前页数-1）* 每页条数，每页条数
+```
+SELECT * FROM table   
+LIMIT(PageNo - 1)*PageSize,PageSize;
+```
+-   **注意：LIMIT 子句必须放在整个SELECT语句的最后！**
+
+### 2.3 拓展
+在不同的 DBMS 中使用的关键字可能不同。在 MySQL、PostgreSQL、MariaDB 和 SQLite 中使用 LIMIT 关键字，而且需要放到 SELECT 语句的最后面。
 
 
 # MySql架构篇
