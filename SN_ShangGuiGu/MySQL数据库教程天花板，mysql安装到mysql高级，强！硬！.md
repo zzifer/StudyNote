@@ -1,6 +1,82 @@
 [MySQL数据库教程天花板，mysql安装到mysql高级，强！硬！_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1iq4y1u7vj/?spm_id_from=333.337.search-card.all.click&vd_source=339a4744bd362ae7b381fd9629bfd3a9)
 
 
+# 02 MySql 
+## 1. MySQL的卸载 p6
+
+## 2. 多版本MySQL的下载、安装、配置 p7
+
+## 3. MySQL的登录 p8
+
+## 4. MySQL的编码设置
+### MySQL5.7中
+**问题再现：命令行操作sql乱码问题**
+```mysql
+# 在mysql5.7中默认的字符集为拉丁所以插入带中文的数据时会报错
+mysql> INSERT INTO t_stu VALUES(1,'张三','男');
+ERROR 1366 (HY000): Incorrect string value: '\xD5\xC5\xC8\xFD' for column 'sname' at row 1
+```
+解决方法：
+步骤1：查看编码命令
+```mysql
+show variables like 'character_%';  
+show variables like 'collation_%';
+```
+
+步骤2：修改mysql的数据目录下的my.ini配置文件
+```mysql
+[mysql]  #大概在63行左右，在其下添加  
+...   
+default-character-set=utf8  #默认字符集  
+​  
+[mysqld]  # 大概在76行左右，在其下添加  
+...  
+character-set-server=utf8  
+collation-server=utf8_general_ci
+```
+> 注意：建议修改配置文件使用notepad++等高级文本编辑器，使用记事本等软件打开修改后可能会导致文件编码修改为“含BOM头”的编码，从而服务重启失败。
+
+步骤3：重启服务
+步骤4：查看编码命令
+```mysql
+show variables like 'character_%';
+show variables like 'collation_%';
+```
+
+### MySQL8.0中
+在MySQL 8.0版本之前，默认字符集为latin1，utf8字符集指向的是utf8mb3。网站开发人员在数据库设计的时候往往会将编码修改为utf8字符集。如果遗忘修改默认的编码，就会出现乱码的问题。从MySQL 8.0开始，数据库的默认编码改为`utf8mb4`，从而避免了上述的乱码问题。
+
+## 5. MySql图形化工具可能出现的连接问题 p10
+有些图形界面工具，特别是旧版本的图形界面工具，在连接MySQL8时出现“Authentication plugin 'caching_sha2_password' cannot be loaded”错误。
+安装的时候选择第二个选项就不会出错
+![[Pasted image 20230208192310.png]]
+
+出现这个原因是MySQL8之前的版本中加密规则是mysql_native_password，而在MySQL8之后，加密规则是caching_sha2_password。解决问题方法有两种，第一种是升级图形界面工具版本，第二种是把MySQL8用户登录密码加密规则还原成mysql_native_password。
+
+第二种解决方案如下，用命令行登录MySQL数据库之后，执行如下命令修改用户密码加密规则并更新用户密码，这里修改用户名为“root@localhost”的用户密码规则为“mysql_native_password”，密码值为“123456”，如图所示。
+```mysql
+#使用mysql数据库
+USE mysql; 
+
+#修改'root'@'localhost'用户的密码规则和密码
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'abc123'; 
+
+#刷新权限
+FLUSH PRIVILEGES;
+```
+
+## 6. MySql目录结构和源码
+### 6.1 主要目录结构
+![[Pasted image 20230208194138.png]]
+
+### 6.2 MySQL 源代码获取
+首先，你要进入 MySQL下载界面。 这里你不要选择用默认的“Microsoft Windows”，而是要通过下拉栏，找到“Source Code”，在下面的操作系统版本里面， 选择 Windows（Architecture Independent），然后点击下载。
+接下来，把下载下来的压缩文件解压，我们就得到了 MySQL 的源代码。
+MySQL 是用 C++ 开发而成的，我简单介绍一下源代码的组成。
+mysql-8.0.22 目录下的各个子目录，包含了 MySQL 各部分组件的源代码：
+![[Pasted image 20230208194226.png]]
+
+
 # 03 基本的SELECT语句 p12
 ![[Pasted image 20230206202151.png]]
 
@@ -194,7 +270,7 @@ mysql> SELECT 'a' IN ('a','b','c'), 1 IN (2,3), NULL IN ('a','b'), 'a' IN ('a', 
 ## 使用正则表达式查询
 
 
-# 05 排序与分页
+# 05 排序与分页 22-24
 
 ## 1. 排序数据
 如果没有使用排序操作，默认情况下查询返回的数据是按照添加数据数据的顺序显示
@@ -265,6 +341,80 @@ LIMIT(PageNo - 1)*PageSize,PageSize;
 ### 2.3 拓展
 在不同的 DBMS 中使用的关键字可能不同。在 MySQL、PostgreSQL、MariaDB 和 SQLite 中使用 LIMIT 关键字，而且需要放到 SELECT 语句的最后面。
 
+# 06 多表查询 25
+多表查询，也称为关联查询，指两个或更多个表一起完成查询操作。
+
+前提条件：这些一起查询的表之间是有关系的（一对一、一对多），它们之间一定是有关联字段，这个关联字段可能建立了外键，也可能没有建立外键。比如：员工表和部门表，这两个表依靠“部门编号”进行关联。
+
+## 1. 一个案例引发的多表连接
+### 1.1 案例说明
+![[Pasted image 20230208160458.png]]
+![[Pasted image 20230208160525.png]]
+```mysql
+#案例：查询员工的姓名及其部门名称
+SELECT last_name, department_name
+FROM employees, departments;
+
+查询结果：
++-----------+----------------------+  
+| last_name | department_name      |  
++-----------+----------------------+  
+| King      | Administration       |  
+| King      | Marketing            |  
+| King      | Purchasing           |  
+| King      | Human Resources      |  
+| King      | Shipping             |  
+| King      | IT                   |  
+| King      | Public Relations     |  
+| King      | Sales                |  
+| King      | Executive            |  
+| King      | Finance              |  
+| King      | Accounting           |  
+| King      | Treasury             |  
+...  
+| Gietz     | IT Support           |  
+| Gietz     | NOC                  |  
+| Gietz     | IT Helpdesk          |  
+| Gietz     | Government Sales     |  
+| Gietz     | Retail Sales         |  
+| Gietz     | Recruiting           |  
+| Gietz     | Payroll              |  
++-----------+----------------------+  
+2889 rows in set (0.01 sec)
+
+# 分析错误情况：
+SELECT COUNT(employee_id) FROM employees;  
+#输出107行  
+SELECT COUNT(department_id)FROM departments;  
+#输出27行  
+
+我们把上述多表查询中出现的问题称为：笛卡尔积的错误
+```
+
+### 1.2 笛卡尔积（或交叉连接）的理解
+SQL92中，笛卡尔积也称为`交叉连接`，英文是 `CROSS JOIN`。在 SQL99 中也是使用 CROSS JOIN表示交叉连接。它的作用就是可以把任意表进行连接，即使这两张表不相关。在MySQL中如下情况会出现笛卡尔积：
+```mysql
+#查询员工姓名和所在部门名称
+SELECT last_name,department_name FROM employees,departments;
+SELECT last_name,department_name FROM employees CROSS JOIN departments;
+SELECT last_name,department_name FROM employees INNER JOIN departments;
+SELECT last_name,department_name FROM employees JOIN departments;
+```
+
+### 1.3 案例分析与问题解决
+-   **笛卡尔积的错误会在下面条件下产生**：
+    -   省略多个表的连接条件（或关联条件）
+    -   连接条件（或关联条件）无效
+    -   所有表中的所有行互相连接
+-   为了避免笛卡尔积， 可以**在 WHERE 加入有效的连接条件。**
+-   加入连接条件后，查询语法：
+```
+	SELECT  table1.column, table2.column  
+    FROM    table1, table2  
+    WHERE   table1.column1 = table2.column2;  #连接条件
+```
+-   在表中有相同列时，在列名之前加上表名前缀
+-   可以给表起别名，当使用别名时后续使用到表名时必须也使用表的别名
 
 # MySql架构篇
 

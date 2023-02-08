@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "aad3a778261778fd",
+        "id": "73f4d76d3dbaf71a",
         "type": "tabs",
         "children": [
           {
-            "id": "ba605b515804b94e",
+            "id": "9f005b243a5fd558",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "a4ff278aab72339c",
@@ -147,17 +146,17 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "ba605b515804b94e",
+  "active": "9f005b243a5fd558",
   "lastOpenFiles": [
-    "SN_MachineLearning/机器学习（李宏毅）.md",
+    "SN_ShangGuiGu/MySQL数据库教程天花板，mysql安装到mysql高级，强！硬！.md",
+    "SN_ShangGuiGu/attachments/Pasted image 20230208160458.png",
     "SN_ShangGuiGu/Git.md",
+    "SN_MachineLearning/机器学习（李宏毅）.md",
     "SN_English/英语兔.md",
     "SN_Math/实变函数.md",
     "SN_Math/数学分析.md",
     "SN_MachineLearning/attachments/Pasted image 20230125155748.png",
     "SN_MachineLearning/attachments/Pasted image 20230125155148.png",
-    "SN_HanShunPing/Linux(韩顺平).md",
-    "SN_HanShunPing/java(韩顺平).md",
-    "SN_ShangGuiGu/MySQL数据库教程天花板，mysql安装到mysql高级，强！硬！.md"
+    "SN_HanShunPing/Linux(韩顺平).md"
   ]
 }
