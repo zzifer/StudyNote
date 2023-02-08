@@ -48,7 +48,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#没有任何子句",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -65,7 +65,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -146,7 +147,7 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "9f005b243a5fd558",
+  "active": "ea39a2c518e39485",
   "lastOpenFiles": [
     "SN_ShangGuiGu/MySQL数据库教程天花板，mysql安装到mysql高级，强！硬！.md",
     "SN_ShangGuiGu/attachments/Pasted image 20230208160458.png",
