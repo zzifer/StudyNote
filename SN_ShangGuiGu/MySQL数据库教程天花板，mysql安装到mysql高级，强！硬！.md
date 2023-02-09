@@ -749,6 +749,93 @@ SELECT employee_id,last_name,department_name
 FROM employees e ,departments d
 WHERE e.department_id = d.department_id;
 ```
+
+
+# 07 单行函数
+大部分 DBMS 会有自己特定的函数，这就意味着**采用 SQL 函数的代码可移植性是很差的**，因此在使用函数的时候需要特别注意。
+MySQL提供的内置函数从`实现的功能角度`可以分为数值函数、字符串函数、日期和时间函数、流程控制函数、加密与解密函数、获取MySQL信息函数、聚合函数等。这里，我将这些丰富的内置函数再分为两类：`单行函数`、`聚合函数（或分组函数）`。
+**单行函数**
+-   操作数据对象
+-   接受参数返回一个结果
+-   **只对一行进行变换**
+-   **每行返回一个结果**
+-   可以嵌套
+-   参数可以是一列或一个值
+
+## 2. 数值函数
+
+### 2.1 基本函数
+![[Pasted image 20230209103036.png]]
+```mysql
+SELECT ABS(-123),ABS(32),SIGN(-23),SIGN(43),PI(),CEIL(32.32),CEILING(-43.23),FLOOR(32.32),
+FLOOR(-43.23),MOD(12,5)
+FROM DUAL;
+```
+![[Pasted image 20230209103329.png]]
+
+### 2.2 角度与弧度互换函数
+![[Pasted image 20230209103940.png]]
+
+### 2.3 三角函数
+![[Pasted image 20230209103957.png]]
+
+### 2.4 指数与对数
+![[Pasted image 20230209104019.png]]
+
+### 2.5 进制间的转换
+![[Pasted image 20230209104038.png]]
+
+## 3. 字符串函数
+![[Pasted image 20230209104653.png]]
+![[Pasted image 20230209104723.png]]
+```mysql
+注意：MySQL中，字符串的位置是从1开始的。
+```
+
+## 4. 日期和时间函数
+### 4.1 获取日期、时间
+![[Pasted image 20230209122030.png]]
+```mysql
+SELECT CURDATE(),CURTIME(),NOW(),SYSDATE()+0,UTC_DATE(),UTC_DATE()+0,UTC_TIME(),UTC_TIME()+0
+FROM DUAL;
+```
+
+### 4.2 日期与时间戳的转换
+![[Pasted image 20230209122058.png]]
+
+### 4.3 获取月份、星期、星期数、天数等函数
+![[Pasted image 20230209122134.png]]
+
+### 4.4 日期的操作函数
+![[Pasted image 20230209122154.png]]
+![[Pasted image 20230209122218.png]]
+### 4.5 时间和秒钟转换的函数
+![[Pasted image 20230209122235.png]]
+### 4.6 计算日期和时间的函数
+![[Pasted image 20230209122306.png]]
+![[Pasted image 20230209122328.png]]
+
+### 4.7 日期的格式化与解析
+![[Pasted image 20230209122351.png]]
+![[Pasted image 20230209122408.png]]
+![[Pasted image 20230209122421.png]]
+
+## 5. 流程控制函数
+流程处理函数可以根据不同的条件，执行不同的处理流程，可以在SQL语句中实现不同的条件选择。MySQL中的流程处理函数主要包括IF()、IFNULL()和CASE()函数。
+![[Pasted image 20230209123157.png]]
+
+## 6. 加密与解密函数
+加密与解密函数主要用于对数据库中的数据进行加密和解密处理，以防止数据被他人窃取。这些函数在保证数据库安全时非常有用。
+![[Pasted image 20230209123524.png]]
+可以看到，ENCODE(value,password_seed)函数与DECODE(value,password_seed)函数互为反函数。
+
+## 7. MySQL信息函数
+![[Pasted image 20230209123805.png]]
+
+## 8. 其他函数
+![[Pasted image 20230209123825.png]]
+
+
 # MySql架构篇
 
 
